@@ -16,7 +16,22 @@ namespace vs_project_converter
 
         static void Help()
         {
-            Console.WriteLine("HELP");
+            Console.WriteLine("To run vs-project-converter");
+            Console.WriteLine();
+            Console.WriteLine("\tdotnet run <preview|convert|help> <solutionPath|projectPath>");
+            Console.WriteLine();
+            Console.WriteLine("\tpreview\t\tCopies the project files with the same filename");
+            Console.WriteLine("\t\t\twith `.converted` appended to the end. For sln files");
+            Console.WriteLine("\t\t\tit will use the referenced name and path");
+            Console.WriteLine();
+            Console.WriteLine("\tconvert\t\tOverwrites the project files with the same filename.");
+            Console.WriteLine("\t\t\tFor sln files it will use the referenced name and path.");
+            Console.WriteLine("\t\t\tThis is a destructive operation! Backup your files!");
+            Console.WriteLine();
+            Console.WriteLine("\tsolutionPath\tPath to a solution file");
+            Console.WriteLine();
+            Console.WriteLine("\tprojectPath\tPath to a csproj file");
+            Console.WriteLine();
         }
 
         static void Run(bool overwriteOnSave, string filePath)
