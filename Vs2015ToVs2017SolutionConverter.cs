@@ -34,6 +34,8 @@ namespace vs_project_converter
                 var argStr = line.Substring(split, line.Length - 1 - split);
                 var args = argStr.Split(',');
                 var project = args[1];
+                if (!project.ToLower().Contains(".csproj")) continue;
+
                 project = project.Substring(1, project.Length - 1 - 1);
                 projects.Add($"{_solutionLocation}\\{project}");
             }
