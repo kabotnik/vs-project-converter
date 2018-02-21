@@ -13,13 +13,16 @@ namespace vs_project_converter
         private readonly string _saveLocation;
         private readonly string _filePath;
 
+        private bool _includeMsTestReferences;
+
         public Vs2015ToVs2017ProjectConverter(FileInfo fileInfo)
         {
             if (fileInfo == null) throw new ArgumentNullException("fileInfo");
 
             _filePath = fileInfo.FullName;
             _projectName = fileInfo.Name.Substring(0,fileInfo.Name.LastIndexOf('.'));
-            _saveLocation = fileInfo.FullName; 
+            _saveLocation = fileInfo.FullName;
+            _includeMsTestReferences = false;
         }
 
         public void ConvertAndSave(bool overwrite = false)
@@ -33,6 +36,8 @@ namespace vs_project_converter
             // Change the project attributes
             var project = document.Element(Constants.Elements.Project);
 
+            _includeMsTestReferences = IsMsTestProject(project);
+
             ModifyProjectAttributes(project);
             RemoveImports(project);
             RemoveChooses(project);
@@ -45,7 +50,7 @@ namespace vs_project_converter
             ModifyPackageReferences(project);
             ModifyProjectReferences(project);
             ModifySystemReferences(project);
-
+            
             // Remove empty elements when done
             RemoveEmptyElements(project);
 
@@ -260,6 +265,20 @@ namespace vs_project_converter
 
                 packageToReplace.ReplaceWith(newPackage);
             }
+
+            if (_includeMsTestReferences)
+            {
+                foreach (var testPackage in Constants.CoreMsTestReferences)
+                {
+                    var newPackage = new XElement(Constants.Elements.PackageReference);
+
+                    newPackage.SetAttributeValue(Constants.Attributes.Include, testPackage.Key);
+                    newPackage.SetAttributeValue(Constants.Attributes.Version, testPackage.Value);
+
+                    parent.Add(newPackage);
+                }
+            }
+
             RemoveNodes(referencesToRemove);
 
             // Lets reorder them by PackageReference and Reference
@@ -420,6 +439,9 @@ namespace vs_project_converter
             return string.Join(".", packageName);
         }
 
+        private bool IsMsTestProject(XElement element) {
+            return element.ToString().Contains(Constants.MSTestFramework);
+        }
         private bool IsWebApplication(XElement element)
         {
             var webAppTarget = element.Elements(Constants.Elements.Import)

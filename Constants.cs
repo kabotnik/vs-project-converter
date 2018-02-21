@@ -6,6 +6,13 @@ namespace vs_project_converter
     public static class Constants
     {
         public static readonly XNamespace Namespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+        
+        public const string MSTestFramework = "Microsoft.VisualStudio.QualityTools.UnitTestFramework";
+        public static readonly Dictionary<string,string> CoreMsTestReferences = new Dictionary<string,string>{
+            {"Microsoft.NET.Test.Sdk", "15.3.0" },
+            {"MSTest.TestAdapter", "1.1.18" },
+            {"MSTest.TestFramework", "1.1.18" }
+        };
         public static readonly string[] Imports = new []{
             "Microsoft.Common.props",
             "Microsoft.CSharp.targets",
